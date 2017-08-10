@@ -1,0 +1,89 @@
+Django model field which stores Jcrop result values for cropping image
+versions of DiverseImageField files.
+
+Usage:
+ *  Install "django-diversion".
+ *  Import  to your models file.
+ *  Add "ImageJCropField" ("diversity.fields.imagejcrop.ImageJCropField")
+    field to model, which also contain "DiverseImageField" field.
+ *  Add "JCrop" ("diversity.fields.imagejcrop.processors.JCrop") imagekit
+    processor to your ImageVersion's ImageKit processors PipeLine.
+ *  Copy static "imagejcrop/*" to your project static folder
+    or add "diversity.fields.imagejcrop" to your INSTALLED_APPS.
+ *  "ImageJCropField" receives two optional additional arguments:
+    -   "image_field" - image field which jcrop field related to.
+            If jcrop field name different to "{image_field.name}_jcrop" value,
+            then argument "image_field" should be defined, and also
+            "JCrop" processor's "image_jcrop_field" argument should be defined
+            too, else leave this argument empty.
+            So if this argument is empty, it value will be taken by cutting
+            "_jcrop" tail from jcrop field name, and similar behaviour in
+            Jcrop imagekit processor.
+    -   "options" - configuration for Jcrop library and JCrop processor,
+            see more in "ImageJCropField" doc string.
+
+Example usage:
+-------------------------------------------------------------------------------
+---------
+diver.py:
+---------
+from diverse.container import BaseContainer
+from diverse.version import Version, ImageVersion
+from diverse.processors.imagekit import ImageKit, ikp
+from diversity.fields.imagejcrop.processors import JCrop
+
+
+# imagekit processor kwargs
+ikwargs = {'format': 'JPEG', 'options': {'quality': 90,},}
+
+
+SOMEMODEL_IMAGE_JCROP_OPTIONS = {
+    'default': 'large',
+    'initial': {'boxWidth': 600,},
+    'data': {
+        'small': {'minSize': [300, 200], 'aspectRatio': 1.5, 'allowSelect': False,},
+        'large': {'minSize': [900, 600], 'aspectRatio': 1.5,},
+        'wide':  {'minSize': [800, 200], 'aspectRatio': 4,},
+    },
+}
+
+
+# base container
+class Container(BaseContainer):
+    vs_lazy = False
+
+
+# containers
+class SomeModelImageContainer(Container):
+    small = ImageVersion(ImageKit(processors=[JCrop(), ikp.ResizeToFit(300, 200)], **ikwargs))
+    large = ImageVersion(ImageKit(processors=[JCrop(), ikp.ResizeToFit(900, 600)], **ikwargs))
+    wide = ImageVersion(ImageKit(processors=[JCrop(), ikp.ResizeToFit(800, 200)], **ikwargs))
+
+
+----------
+models.py:
+----------
+from django.utils.translation import ugettext_lazy as _
+from django.db import models
+from diverse.fields import fields, validators as dvalidators
+from diversity.fields.imagejcrop.fields import ImageJCropField
+from . import diver
+
+
+FILES_UPLOAD_TO = {
+    'modelname__image': 'appname/modelname/image/%Y/%m/',
+}
+
+
+class SomeModel(models.Model):
+    image = fields.DiverseImageField(
+        _('item image'), blank=True, null=False,
+        upload_to=FILES_UPLOAD_TO['modelname__image'],
+        container=diver.SomeModelImageContainer, thumbnail='small',
+        erasable=True, clearable=True, updatable=True,
+        validators=[dvalidators.MimetypeValidator(['image/jpeg', 'image/png',]),
+                    dvalidators.ExtensionValidator(['.jpg', '.jpeg', '.png',]),
+                    dvalidators.FilesizeValidator(max=1024*1024*10),]
+    )
+    image_cache = models.CharField(max_length=9999, editable=False, blank=True)
+    image_jcrop = ImageJCropField(options=diver.SOMEMODEL_IMAGE_JCROP_OPTIONS)

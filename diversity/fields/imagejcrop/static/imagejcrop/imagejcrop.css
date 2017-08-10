@@ -1,0 +1,45 @@
+div.jcrop-field {
+  overflow: auto;
+  padding-bottom: 0.5em;
+}
+
+div.jcrop-field .jcrop-launcher {
+  padding: 6px 0 5px 0;
+}
+
+div.jcrop-field input {
+  display: none;
+}
+div.jcrop-field input.jcrop-field-visible {
+  display: inherit;
+}
+
+div.jcrop-field .jcrop-icon {
+  color: #cccccc;
+}
+div.jcrop-field .jcrop-icon.jcrop-icon-enabled {
+  color: #a41515;
+}
+
+div.jcrop-field .jcrop-coords {
+  display: none;
+  font-family: monospace;
+}
+
+div.jcrop-field .jcrop-option-enabled {
+  color: #a41515;
+  font-weight: bold;
+}
+
+div.jcrop-field .jcrop-info {
+  display: none;
+}
+div.jcrop-field .jcrop-info.jcrop-info-visible {
+  display: block;
+  position: absolute;
+  z-index: 999;
+  background: #ffc;
+  border: 1px #aaa solid;
+  margin: 10px 0 0 10px;
+  font-family: monospace;
+}
