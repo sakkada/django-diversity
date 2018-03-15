@@ -20,7 +20,10 @@ class JCrop(object):
             return img
 
         jcrop_fname = self.get_image_jcrop_field_name(field)
-        default = instance._meta.get_field(jcrop_fname).options.get('default')
+        options = instance._meta.get_field(jcrop_fname).options
+        options = (options if not callable(options) else
+                   options(instance, field.name))
+        default = options.get('default', None)
 
         # get jcrop value by attrname or by default name otherwise
         value = getattr(instance, jcrop_fname, None)

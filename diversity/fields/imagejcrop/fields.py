@@ -92,8 +92,8 @@ class ImageJCropField(models.CharField):
                 break
             elif not value:
                 # calculate initial cropping
-                options = (self.options(instance, self.name)
-                           if callable(self.options) else self.options)
+                options = (self.options if not callable(self.options) else
+                           self.options(instance, self.image_field))
                 options = options.get('data', {})
 
                 try:

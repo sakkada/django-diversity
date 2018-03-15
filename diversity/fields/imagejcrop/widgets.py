@@ -44,7 +44,7 @@ class ImageJCropWidget(forms.TextInput):
 
         # get options, options may be callable
         options = (self.options if not callable(self.options) else
-                   self.options(instance, name))
+                   self.options(instance, self.image_field))
         options['initial'] = options['initial'] or {}
         options['initial'].update({'trueSize': [image.width, image.height,],})
 

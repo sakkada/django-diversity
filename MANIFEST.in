@@ -1,2 +1,2 @@
-include *.txt
-include *.rst
+recursive-include diversity readme *.css *.js *.gif
+global-exclude *.py[co]
