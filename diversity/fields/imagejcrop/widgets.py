@@ -33,7 +33,7 @@ class ImageJCropWidget(forms.TextInput):
         return getattr(super(ImageJCropWidget, self),
                        'media', forms.Media()) + forms.Media(js=js, css=css)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if not attrs:
             attrs = {}
         widget = super(forms.TextInput, self).render(name, value, attrs)

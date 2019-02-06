@@ -1,2 +1,3 @@
+include README.md LICENSE.txt
 recursive-include diversity readme *.css *.js *.gif
 global-exclude *.py[co]

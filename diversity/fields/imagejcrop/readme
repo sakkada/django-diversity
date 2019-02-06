@@ -2,7 +2,7 @@ Django model field which stores Jcrop result values for cropping image
 versions of DiverseImageField files.
 
 Usage:
- *  Install "django-diversion".
+ *  Install "django-diversity".
  *  Import  to your models file.
  *  Add "ImageJCropField" ("diversity.fields.imagejcrop.ImageJCropField")
     field to model, which also contain "DiverseImageField" field.

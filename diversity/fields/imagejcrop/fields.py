@@ -3,7 +3,7 @@ from django.db import models
 from .widgets import ImageJCropWidget
 
 
-class UnicodeValueWithInstance(unicode):
+class StrValueWithInstance(str):
     def get_value(self):
         try:
             data = json.loads(self)
@@ -18,12 +18,12 @@ class ImageJCropDescriptor(object):
 
     def __get__(self, instance=None, owner=None):
         value = instance.__dict__[self.field.name]
-        value = UnicodeValueWithInstance(value)
+        value = StrValueWithInstance(value)
         value.instance = instance
         return value
 
     def __set__(self, instance, value):
-        instance.__dict__[self.field.name] = unicode(value)
+        instance.__dict__[self.field.name] = str(value)
 
 
 class ImageJCropField(models.CharField):
