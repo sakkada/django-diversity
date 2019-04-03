@@ -41,9 +41,11 @@ SOMEMODEL_IMAGE_JCROP_OPTIONS = {
     'default': 'large',
     'initial': {'boxWidth': 600,},
     'data': {
-        'small': {'minSize': [300, 200], 'aspectRatio': 1.5, 'allowSelect': False,},
+        'small': {'minSize': [300, 200], 'aspectRatio': 1.5,
+                  'allowSelect': False,},  # any JCrop settings here
         'large': {'minSize': [900, 600], 'aspectRatio': 1.5,},
         'wide':  {'minSize': [800, 200], 'aspectRatio': 4,},
+        'float':  {},  # empty options
     },
 }
 
@@ -55,9 +57,14 @@ class Container(BaseContainer):
 
 # containers
 class SomeModelImageContainer(Container):
-    small = ImageVersion(ImageKit(processors=[JCrop(), ikp.ResizeToFit(300, 200)], **ikwargs))
-    large = ImageVersion(ImageKit(processors=[JCrop(), ikp.ResizeToFit(900, 600)], **ikwargs))
-    wide = ImageVersion(ImageKit(processors=[JCrop(), ikp.ResizeToFit(800, 200)], **ikwargs))
+    small = ImageVersion(
+        ImageKit(processors=[JCrop(), ikp.ResizeToFit(300, 200)], **ikwargs))
+    large = ImageVersion(
+        ImageKit(processors=[JCrop(), ikp.ResizeToFit(900, 600)], **ikwargs))
+    wide = ImageVersion(
+        ImageKit(processors=[JCrop(), ikp.ResizeToFit(800, 200)], **ikwargs))
+    float = ImageVersion(
+        ImageKit(processors=[JCrop()], **ikwargs))  # float cropping size
 
 
 ----------
@@ -81,9 +88,11 @@ class SomeModel(models.Model):
         upload_to=FILES_UPLOAD_TO['modelname__image'],
         container=diver.SomeModelImageContainer, thumbnail='small',
         erasable=True, clearable=True, updatable=True,
-        validators=[dvalidators.MimetypeValidator(['image/jpeg', 'image/png',]),
-                    dvalidators.ExtensionValidator(['.jpg', '.jpeg', '.png',]),
-                    dvalidators.FilesizeValidator(max=1024*1024*10),]
+        validators=[
+            dvalidators.MimetypeValidator(['image/jpeg', 'image/png',]),
+            dvalidators.ExtensionValidator(['.jpg', '.jpeg', '.png',]),
+            dvalidators.FilesizeValidator(max=1024*1024*10),
+        ]
     )
     image_cache = models.CharField(max_length=9999, editable=False, blank=True)
     image_jcrop = ImageJCropField(options=diver.SOMEMODEL_IMAGE_JCROP_OPTIONS)
