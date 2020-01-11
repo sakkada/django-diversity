@@ -70,7 +70,7 @@ class SomeModelImageContainer(Container):
 ----------
 models.py:
 ----------
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 from diverse.fields import fields, validators as dvalidators
 from diversity.fields.imagejcrop.fields import ImageJCropField
